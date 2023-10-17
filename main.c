@@ -8,10 +8,13 @@ int main(int argc, char **argv) {
     (void)argc;
     (void)argv;
 
-    printf("%s", prompt);
-    getline(&lineptr, &n, stdin);
-    printf("%s\n", lineptr);
-
+    while (1) {
+        printf("%s", prompt);
+        getline(&lineptr, &n, stdin);
+        printf("%s\n", lineptr);
+    }
+    
+    
     free(lineptr);
     return (0);
 }
