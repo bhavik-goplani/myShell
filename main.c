@@ -2,9 +2,10 @@
 
 int main(int argc, char **argv) {
     char *prompt = "[QUASH]$ ";
-    char *lineptr = NULL, *lineptr_copy = NULL;
+    char *lineptr, *lineptr_copy;
     const char *delimiter = " \n";
     char *token = NULL;
+    char **argv = NULL;
     size_t n = 0;
     ssize_t read = 0;
     int num_tokens = 0;
@@ -52,8 +53,15 @@ int main(int argc, char **argv) {
             printf("%s\n", argv[i]);
         }
         free(lineptr);
+        lineptr = NULL;
         free(lineptr_copy);
+        lineptr_copy = NULL;
+        for (i = 0; argv[i] != NULL; i++) {
+            free(argv[i]);
+            argv[i] = NULL;
+        }
         free(argv);
+        argv = NULL;
     }
 
     
