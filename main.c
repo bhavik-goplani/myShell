@@ -13,15 +13,21 @@ int main(int argc, char **argv) {
     (void)argc;
     printf("Wekcome...\n");
 
-    while (read != -1) {
+    while (1) {
         printf("%s", prompt);
         read = getline(&lineptr, &n, stdin);
+        
+        if (read == -1) {
+            perror("Quash: getline error");
+            return (-1);
+        }
         
         lineptr_copy = malloc(sizeof(char) * read);
         if (lineptr_copy== NULL){
             perror("Quash: memory allocation error");
             return (-1);
         }
+        
         strcpy(lineptr_copy, lineptr);
 
         token = strtok(lineptr, delimiter);
