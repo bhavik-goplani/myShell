@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
         read = getline(&lineptr, &n, stdin);
         
         if (read == -1) {
-            return (-1);
+            return (0);
         }
         
         lineptr_copy = malloc(sizeof(char) * read);
