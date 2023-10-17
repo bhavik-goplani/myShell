@@ -5,7 +5,6 @@ int main(int argc, char **argv) {
     char *lineptr, *lineptr_copy;
     const char *delimiter = " \n";
     char *token = NULL;
-    char **argv = NULL;
     size_t n = 0;
     ssize_t read = 0;
     int num_tokens = 0;
