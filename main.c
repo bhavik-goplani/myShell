@@ -18,7 +18,6 @@ int main(int argc, char **argv) {
         read = getline(&lineptr, &n, stdin);
         
         if (read == -1) {
-            perror("Quash: getline error");
             return (-1);
         }
         
