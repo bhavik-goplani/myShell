@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
         read = getline(&lineptr, &n, stdin);
         
         if (read == -1) {
+            free(lineptr);    
             return (0);
         }
         
@@ -54,8 +55,5 @@ int main(int argc, char **argv) {
         free(argv);
         argv = NULL;
     }
-    free(lineptr);
-    lineptr = NULL;
-    free(argv);
     return (0);
 }
