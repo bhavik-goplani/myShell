@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv) {
     char *prompt = "[QUASH]$ ";
-    char *lineptr, *lineptr_copy;
+    char *lineptr = NULL, *lineptr_copy = NULL;
     const char *delimiter = " \n";
     char *token = NULL;
     size_t n = 0;
