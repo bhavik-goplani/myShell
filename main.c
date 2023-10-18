@@ -7,10 +7,10 @@ int main(int argc, char **argv) {
     char *token = NULL;
     size_t n = 0;
     ssize_t read = 0;
-    int num_tokens;
+    int num_tokens = 0;
 
     (void)argc;
-    printf("Wekcome...\n");
+    printf("Welcome...\n");
 
     while (1) {
         num_tokens = 0;
@@ -41,9 +41,8 @@ int main(int argc, char **argv) {
         }
         argv[num_tokens] = NULL;
 
-        for (int i = 0; argv[i] != NULL; i++) {
-            printf("%s\n", argv[i]);
-        }
+        execcmd(argv);
+
         free(lineptr);
         lineptr = NULL;
         free(lineptr_copy);
