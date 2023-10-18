@@ -1,8 +1,8 @@
 #include "main.h"
 
 char *get_location(char *command) {
-    char *path, *path_copy, *token = NULL, *file_path = NULL;
-    int command_len = 0, token_len = 0;
+    char *path, *path_copy, *token, *file_path;
+    int command_len, token_len;
     struct stat buffer;
 
     path = getenv("PATH");
@@ -28,15 +28,13 @@ char *get_location(char *command) {
             }
             else {
                 free(file_path);
-                file_path = NULL;
                 token = strtok(NULL, ":");
             }
         }
         free(path_copy);
 
         if (stat(command, &buffer) == 0) {
-            file_path = strdup(command);
-            return (file_path);
+            return (command);
         }
         return (NULL);
     }
