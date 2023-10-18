@@ -6,7 +6,9 @@ void execcmd(char **argv){
 
     if (argv) {
         command = argv[0];
+        printf("command: %s\n", command);
         command_location = get_location(command);
+        printf("command_location: %s\n", command_location);
 
         if (execve(command_location, argv, NULL) == -1) {
             perror("ErrorLaunchingProcess:");
