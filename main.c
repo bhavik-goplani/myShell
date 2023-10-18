@@ -56,5 +56,6 @@ int main(int argc, char **argv) {
     }
     free(lineptr);
     lineptr = NULL;
+    free(argv);
     return (0);
 }
