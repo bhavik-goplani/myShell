@@ -21,13 +21,7 @@ int main(int argc, char **argv) {
             return (0);
         }
         
-        lineptr_copy = malloc(sizeof(char) * read);
-        if (lineptr_copy== NULL){
-            perror("Quash: memory allocation error");
-            return (-1);
-        }
-        
-        strcpy(lineptr_copy, lineptr);
+        lineptr_copy = strdup(lineptr);
 
         token = strtok(lineptr, delimiter);
         
@@ -35,18 +29,16 @@ int main(int argc, char **argv) {
             num_tokens++;
             token = strtok(NULL, delimiter);
         }
-        num_tokens++;
+        argv = malloc(sizeof(char *) * (num_tokens+1));
 
-        argv = malloc(sizeof(char *) * num_tokens);
-
+        num_tokens = 0;
         token = strtok(lineptr_copy, delimiter);
-
-        for (i = 0; token!= NULL; i++) {
-            argv[i] = malloc(sizeof(char) * strlen(token));
-            strcpy(argv[i], token);
+        while (token != NULL) {
+            argv[num_tokens] = strdup(token);
+            num_tokens++;
             token = strtok(NULL, delimiter);
         }
-        argv[i] = NULL;
+        argv[num_tokens] = NULL;
 
         for (i = 0; argv[i] != NULL; i++) {
             printf("%s\n", argv[i]);
@@ -62,7 +54,7 @@ int main(int argc, char **argv) {
         free(argv);
         argv = NULL;
     }
-
-    
+    free(lineptr);
+    lineptr = NULL;
     return (0);
 }
