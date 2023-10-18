@@ -1,5 +1,8 @@
 quash: main.c
-	gcc -Wall -Wextra -Werror -pedantic main.c execcmd.c -o quash
+	gcc -Wall -Wextra -Werror -pedantic *.c -o quash
 
 quash_test: quash
 	./quash
+	
+clean:
+	rm -f quash
