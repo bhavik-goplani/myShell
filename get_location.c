@@ -39,11 +39,5 @@ char *get_location(char *command) {
         }
         return (NULL);
     }
-    else {
-        if (stat(command, &buffer) == 0) {
-            file_path = strdup(command);
-            return (file_path);
-        }
-        return (NULL);
-    }
+    return (NULL);
 }
