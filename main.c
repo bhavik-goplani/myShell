@@ -22,6 +22,11 @@ int main(int argc, char **argv) {
         
         argv = parse_command(lineptr, argv);
 
+        if (argv[0] == "exit" || argv[0] == "quit") {
+            free_argv(argv);
+            return (0);
+        }
+
         pid = fork();
         if (pid == 0) {
             execcmd(argv);
