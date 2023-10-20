@@ -9,7 +9,11 @@ void execcmd(char **argv){
         command_location = get_location(command);
 
         if (execve(command_location, argv, NULL) == -1) {
+            free(command_location);
             perror("ErrorLaunchingProcess:");
+        }
+        else { 
+            free(command_location);
         }
     }
 }
