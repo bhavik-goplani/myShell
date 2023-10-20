@@ -1,7 +1,7 @@
 #include "main.h"
 
 char **parse_command(char *lineptr, char **argv) {
-    char lineptr_copy = NULL, token = NULL;
+    char *lineptr_copy = NULL, *token = NULL;
     const char *delimiter = " \n";
     int num_tokens = 0;
 
@@ -26,6 +26,6 @@ char **parse_command(char *lineptr, char **argv) {
 
     free(lineptr);
     free(lineptr_copy);
-    
+
     return (argv);
 }
