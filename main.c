@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     return (0);
 }
 
-static void free_argv(char **argv) {
+void free_argv(char **argv) {
     for (int i = 0; argv[i] != NULL; i++) {
         free(argv[i]);
         argv[i] = NULL;
