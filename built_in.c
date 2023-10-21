@@ -16,7 +16,7 @@ int sh_num_builtins() {
   return sizeof(builtin_str) / sizeof(char *);
 }
 
-int sh_exit(char **argv)
+int sh_exit()
 {
     return (0);
 }
