@@ -15,6 +15,7 @@ void free_argv(char **argv);
 int sh_exit();
 int sh_cd(char **argv);
 int sh_export(char **argv);
+int sh_echo(char **argv);
 int sh_num_builtins();
 int sh_launch(char **argv);
 int sh_execute(char **argv);
