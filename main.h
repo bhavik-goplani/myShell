@@ -14,3 +14,6 @@ char **parse_command(char *lineptr, char **argv);
 void free_argv(char **argv);
 int sh_exit(char **argv);
 int sh_cd(char **argv);
+int sh_num_builtins();
+extern char *builtin_str[];
+extern int (*builtin_func[]) (char **);

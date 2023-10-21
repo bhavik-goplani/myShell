@@ -5,7 +5,6 @@ int main(int argc, char **argv) {
     char *lineptr;
     size_t n = 0;
     ssize_t read = 0;
-    pid_t pid;
 
     (void)argc;
     printf("Welcome...\n");
@@ -13,7 +12,7 @@ int main(int argc, char **argv) {
     while (1) {
         lineptr = NULL;
         printf("%s", prompt);
-        read = getline(&lineptr, &n, stdin);
+        read = getline(&lineptr, &n, stdin); 
         
         if (read == -1) {
             free(lineptr);    
@@ -21,25 +20,7 @@ int main(int argc, char **argv) {
         }
         
         argv = parse_command(lineptr, argv);
-
-        if (sh_exit(argv) == 0) {
-            free_argv(argv);
-            return (0);
-        }
-        if (sh_cd(argv) == 0) {
-            free_argv(argv);
-            continue;
-        }
-
-        pid = fork();
-        if (pid == 0) {
-            execcmd(argv);
-            exit(0);
-        }
-        else {
-            wait(NULL);
-        }
-
+        sh_execute(argv);
         free_argv(argv);
     }
     return (0);
@@ -52,4 +33,36 @@ void free_argv(char **argv) {
     }
     free(argv);
     argv = NULL;
+}
+
+int sh_execute(char **argv) {
+    int i;
+
+    if (argv[0] == NULL) {
+        return (1);
+    }
+    for (i = 0; i < sh_num_builtins(); i++) {
+        if (strcmp(argv[0], builtin_str[i]) == 0) {
+            return ((*builtin_func[i])(argv));
+        }
+    }
+    return (sh_launch(argv));
+}
+
+int sh_launch(char **argv) {
+    pid_t pid;
+
+    pid = fork();
+    if (pid == 0) {
+        execcmd(argv);
+        exit(0);
+    }
+    else if (pid < 0) {
+        perror("ErrorForking:");
+    }
+    else {
+        wait(NULL);
+    }
+
+    return (1);
 }

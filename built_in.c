@@ -1,5 +1,21 @@
 #include "main.h"
 
+char *builtin_str[] = {
+  "cd",
+  "exit",
+  "quit"
+};
+
+int (*builtin_func[]) (char **) = {
+  &sh_cd,
+  &sh_exit,
+  &sh_exit
+};
+
+int sh_num_builtins() {
+  return sizeof(builtin_str) / sizeof(char *);
+}
+
 int sh_exit(char **argv)
 {
     if (strcmp(argv[0], "exit") == 0 || strcmp(argv[0], "quit") == 0) {
