@@ -15,5 +15,7 @@ void free_argv(char **argv);
 int sh_exit(char **argv);
 int sh_cd(char **argv);
 int sh_num_builtins();
+int sh_launch(char **argv);
+int sh_execute(char **argv);
 extern char *builtin_str[];
 extern int (*builtin_func[]) (char **);
