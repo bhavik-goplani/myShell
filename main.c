@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
         
         argv = parse_command(lineptr, argv);
 
-        if (argv[0] == "exit" || argv[0] == "quit") {
+        if (strcmp(argv[0], "exit") == 0 || strcmp(argv[0], "quit") == 0) {
             free_argv(argv);
             return (0);
         }
