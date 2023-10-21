@@ -22,9 +22,13 @@ int main(int argc, char **argv) {
         
         argv = parse_command(lineptr, argv);
 
-        if (strcmp(argv[0], "exit") == 0 || strcmp(argv[0], "quit") == 0) {
+        if (sh_exit(argv) == 0) {
             free_argv(argv);
             return (0);
+        }
+        if (sh_cd(argv) == 0) {
+            free_argv(argv);
+            continue;
         }
 
         pid = fork();

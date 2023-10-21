@@ -12,3 +12,5 @@ void execcmd(char **argv);
 char *get_location(char *command);
 char **parse_command(char *lineptr, char **argv);
 void free_argv(char **argv);
+int sh_exit(char **argv);
+int sh_cd(char **argv);
