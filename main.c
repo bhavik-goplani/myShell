@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
         }
         
         argv = parse_command(lineptr, argv);
-        if (sh_execute(argv) == 0) {
+        if (sh_execute(argv) == -1) {
             free_argv(argv);
             return (0);
         }

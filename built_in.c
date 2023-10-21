@@ -18,7 +18,7 @@ int sh_num_builtins() {
 
 int sh_exit()
 {
-    return (0);
+    return (-1);
 }
 
 int sh_cd(char **argv)
