@@ -18,10 +18,7 @@ int sh_num_builtins() {
 
 int sh_exit(char **argv)
 {
-    if (strcmp(argv[0], "exit") == 0 || strcmp(argv[0], "quit") == 0) {
-        return (0);
-    }
-    return (1);
+    return (0);
 }
 
 int sh_cd(char **argv)
