@@ -120,6 +120,7 @@ char *helper_env_path(char *token) {
         }
         strcpy(result, value);
         strcat(result, path);
+        strcat(result, "\0");
         free(token_copy);  
         return result;
     } else if (value != NULL) {
@@ -129,6 +130,7 @@ char *helper_env_path(char *token) {
             return NULL;
         }
         strcpy(result, value);
+        strcat(result, "\0");
         free(token_copy);  
         return result;
     } else if (path != NULL) {
@@ -139,6 +141,7 @@ char *helper_env_path(char *token) {
             return NULL;
         }
         strcpy(result, path);
+        strcat(result, "\0");
         free(token_copy);  
         return result;
     } else {
