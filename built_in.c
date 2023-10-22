@@ -101,8 +101,10 @@ char *helper_env_path(char *token) {
             break;
         }
     }
+    printf("path: %s\n", path);
     char *environ = strtok(token, "/");
     value = getenv(environ);
+    printf("value: %s\n", value);
     if (value != NULL) {
         char *result = malloc(strlen(value) + strlen(path) + 1);
         strcpy(result, value);
