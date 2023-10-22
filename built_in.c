@@ -80,7 +80,9 @@ int sh_echo(char **argv)
                 token++;
                 char *value = helper_env_path(token);
                 printf("%s ", value);
-                free(value);
+                if (value != NULL){
+                    free(value);
+                } 
             }
             else {
                 printf("%s ", argv[i]);
@@ -114,10 +116,16 @@ char *helper_env_path(char *token) {
         return (result);
     }
     else if (value != NULL) {
-        return (value);
+        char *result = malloc(strlen(value) + 1);
+        strcpy(result, value);
+        strcat(result, "\0");
+        return (result);
     }
     else if (path != NULL){
-        return (path);
+        char *result = malloc(strlen(path) + 1);
+        strcpy(result, path);
+        strcat(result, "\0");
+        return (result);
     }
     else {
         return (NULL);
