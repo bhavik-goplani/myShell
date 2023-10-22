@@ -10,7 +10,9 @@ void execcmd(char **argv){
 
         if (execve(command_location, argv, NULL) == -1) {
             free(command_location);
-            perror("ErrorLaunchingProcess:");
+            char error_message[100];
+            sprintf(error_message, "%s: command not found", command);
+            perror(error_message);
         }
         else { 
             free(command_location);
