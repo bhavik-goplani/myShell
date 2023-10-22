@@ -31,8 +31,24 @@ int sh_cd(char **argv)
         chdir(getenv("HOME"));
     }
     else {
-        if (chdir(argv[1]) == -1) {
-            perror("ErrorChangingDirectory:");
+        for (int i = 1; argv[i] != NULL; i++) {
+            if (argv[i][0] == '$') {
+                argv[i]++;
+                char *result = helper_env_path(argv[i]);
+                if (chdir(result) == -1) {
+                    perror("ErrorChangingDirectory:");
+                }
+                else {
+                    setenv("PWD", result, 1);
+                }
+                free(result);
+            }
+            else if (chdir(argv[i]) == -1) {
+                perror("ErrorChangingDirectory:");
+            }
+            else {
+                setenv("PWD", argv[i], 1);
+            }
         }
     }
     return (0);
