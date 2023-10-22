@@ -102,23 +102,23 @@ char *helper_env_path(char *token) {
         return NULL;
     }
 
-    for (int i = 0; i < (int)strlen(token_copy); i++) {
-        if (token_copy[i] == '/') {
-            path = token_copy + i;
+    for (int i = 0; i < (int)strlen(token); i++) {
+        if (token[i] == '/') {
+            path = token + i;
             break;
         }
     }
-    printf("path: %s\n", path);
+    
     char *environ = strtok(token_copy, "/");
     value = getenv(environ);
-    printf("value: %s\n", value);
+    
     if (value != NULL && path != NULL) {
         char *result = (char *)malloc(strlen(value) + strlen(path) + 1);
         if (result == NULL) {
             free(token_copy);
             return NULL;
         }
-        strcpy(result, value);
+        strcpy(result, value); 
         strcat(result, path);
         strcat(result, "\0");
         free(token_copy);  
