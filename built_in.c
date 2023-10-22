@@ -94,7 +94,7 @@ char *helper_env_path(char *token) {
     char *path = NULL;
     char *value = NULL;
 
-    for(int i = 0; i< strlen(token); i++) {
+    for(int i = 0; i< (int)strlen(token); i++) {
         if (token[i] == '/') {
             path = token + i;
             break;
