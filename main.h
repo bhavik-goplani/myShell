@@ -19,5 +19,6 @@ int sh_echo(char **argv);
 int sh_num_builtins();
 int sh_launch(char **argv);
 int sh_execute(char **argv);
+char *helper_env_path(char *token);
 extern char *builtin_str[];
 extern int (*builtin_func[]) (char **);
