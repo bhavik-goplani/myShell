@@ -55,8 +55,9 @@ int sh_export(char **argv)
             else {
                 if (value[0] == '$') {
                     value++;
-                    value = helper_env_path(value);
-                    setenv(name, value, 1);
+                    char *result = helper_env_path(value);
+                    setenv(name, result, 1);
+                    free(result);
                 }
                 else if (setenv(name, value, 1) == -1) {
                     perror("ErrorExportingVariable:");
@@ -79,6 +80,7 @@ int sh_echo(char **argv)
                 token++;
                 char *value = helper_env_path(token);
                 printf("%s ", value);
+                free(value);
             }
             else {
                 printf("%s ", argv[i]);
@@ -102,8 +104,11 @@ char *helper_env_path(char *token) {
     char *environ = strtok(token, "/");
     value = getenv(environ);
     if (value != NULL) {
-        strcat(value, path);
-        return (value);
+        char *result = malloc(strlen(value) + strlen(path) + 1);
+        strcpy(result, value);
+        strcat(result, path);
+        strcat(result, "\0");
+        return (result);
     }
     return (path);
 }
