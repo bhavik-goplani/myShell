@@ -87,7 +87,6 @@ int sh_echo(char **argv)
             else {
                 printf("%s ", argv[i]);
             }
-            free(token);
         }
         printf("\n");
     }
