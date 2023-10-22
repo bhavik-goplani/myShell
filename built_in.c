@@ -97,37 +97,53 @@ int sh_echo(char **argv)
 char *helper_env_path(char *token) {
     char *path = NULL;
     char *value = NULL;
+    
+    char *token_copy = strdup(token);
+    if (token_copy == NULL) {
+        return NULL;
+    }
 
-    for(int i = 0; i< (int)strlen(token); i++) {
-        if (token[i] == '/') {
-            path = token + i;
+    for (int i = 0; i < (int)strlen(token_copy); i++) {
+        if (token_copy[i] == '/') {
+            path = token_copy + i;
             break;
         }
     }
     printf("path: %s\n", path);
-    char *environ = strtok(token, "/");
+    char *environ = strtok(token_copy, "/");
     value = getenv(environ);
     printf("value: %s\n", value);
     if (value != NULL && path != NULL) {
-        char *result = malloc(strlen(value) + strlen(path) + 1);
+        char *result = (char *)malloc(strlen(value) + strlen(path) + 1);
+        if (result == NULL) {
+            free(token_copy);
+            return NULL;
+        }
         strcpy(result, value);
         strcat(result, path);
-        strcat(result, "\0");
-        return (result);
-    }
-    else if (value != NULL) {
-        char *result = malloc(strlen(value) + 1);
+        free(token_copy);  
+        return result;
+    } else if (value != NULL) {
+        char *result = (char *)malloc(strlen(value) + 1);
+        if (result == NULL) {
+            free(token_copy);
+            return NULL;
+        }
         strcpy(result, value);
-        strcat(result, "\0");
-        return (result);
-    }
-    else if (path != NULL){
-        char *result = malloc(strlen(path) + 1);
+        free(token_copy);  
+        return result;
+    } else if (path != NULL) {
+        char *result = (char *)malloc(strlen(path) + 1);
+        if (result == NULL) {
+
+            free(token_copy);
+            return NULL;
+        }
         strcpy(result, path);
-        strcat(result, "\0");
-        return (result);
-    }
-    else {
-        return (NULL);
+        free(token_copy);  
+        return result;
+    } else {
+        free(token_copy); 
+        return NULL;
     }
 }
