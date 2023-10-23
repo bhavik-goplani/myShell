@@ -182,18 +182,61 @@ char *helper_env_path(char *token) {
     }
 }
 
+// char **helper_remove_quotes(char **argv) {
+//     for (int i = 0; argv[i] != NULL; i++) {
+//         char *token = strdup(argv[i]);
+        
+//         if (token[0] == '\"' || token[0] == '\'' ) {
+//             memmove(argv[i], token + 1, strlen(token));
+//         }
+//         if (token[strlen(token) - 1] == '\"' || token[strlen(token) - 1] == '\'') {
+//             argv[i][strlen(token) - 1] = '\0'; 
+//         }
+//         printf("%s\n", argv[i]);
+//         free(token); 
+//     }
+//     return argv;
+// }
+
 char **helper_remove_quotes(char **argv) {
     for (int i = 0; argv[i] != NULL; i++) {
-        char *token = strdup(argv[i]);
-        
-        if (token[0] == '\"' || token[0] == '\'' ) {
-            memmove(argv[i], token + 1, strlen(token));
+        char *token = argv[i];
+        char start_quote = '\0';
+        int token_length = strlen(token);
+        int read_index = 0;
+        int write_index = 0;
+
+        // Iterate through the string character by character
+        while (read_index < token_length) {
+            char current_char = token[read_index];
+
+            if (current_char == '\'' || current_char == '\"') {
+                // If we encounter a quote character
+                if (start_quote == '\0') {
+                    // If start_quote is not set, set it
+                    start_quote = current_char;
+                } else if (start_quote == current_char) {
+                    // If start_quote is the same as the current character, it's a closing quote
+                    start_quote = '\0';
+                } else {
+                    // If start_quote is different from the current character, keep it
+                    token[write_index] = current_char;
+                    write_index++;
+                }
+            } else {
+                // For non-quote characters, simply copy them
+                token[write_index] = current_char;
+                write_index++;
+            }
+
+            read_index++;
         }
-        if (token[strlen(token) - 1] == '\"' || token[strlen(token) - 1] == '\'') {
-            argv[i][strlen(token) - 1] = '\0'; 
-        }
-        printf("%s\n", argv[i]);
-        free(token); 
+
+        // Null-terminate the modified string
+        token[write_index] = '\0';
+
+        printf("%s\n", token);
     }
+
     return argv;
 }
