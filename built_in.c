@@ -183,19 +183,16 @@ char *helper_env_path(char *token) {
 }
 
 char **helper_remove_quotes(char **argv) {
-    for (int i = 1; argv[i] != NULL; i++) {
+    for (int i = 0; argv[i] != NULL; i++) {
         char *token = strdup(argv[i]);
         if (token[0] == '\"' || token[0] == '\'') {
-            token++;
+            memmove(argv[i], token + 1, strlen(token));
         }
-        if (token[strlen(token)-1] == '\"' || token[strlen(token)-1] == '\'') {
-            token[strlen(token)-1] = '\0';
+        if (token[strlen(token) - 1] == '\"' || token[strlen(token) - 1] == '\'') {
+            argv[i][strlen(token) - 1] = '\0'; 
         }
-        if (argv[i] != NULL) {
-            free(argv[i]);
-        }
-        argv[i] = token;
         printf("%s\n", argv[i]);
+        free(token); 
     }
     return argv;
 }
