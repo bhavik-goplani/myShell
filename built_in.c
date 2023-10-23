@@ -100,7 +100,7 @@ int sh_echo(char **argv)
         argv = helper_remove_quotes(argv);
         for (int i = 1; argv[i] != NULL; i++) {
             char *token = argv[i];
-            if (token[0] == '$') {
+            if (token[0] == '$' && token[1] != '\0') {
                 token++;
                 char *value = helper_env_path(token);
                 printf("%s ", value);
