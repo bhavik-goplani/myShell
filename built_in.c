@@ -106,7 +106,8 @@ int sh_echo(char **argv)
                 printf("%s ", value);
                 if (value != NULL){
                     free(value);
-                } 
+                }
+                free(token); 
             }
             else {
                 printf("%s ", argv[i]);
