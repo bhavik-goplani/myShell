@@ -188,8 +188,8 @@ char **helper_remove_quotes(char **argv) {
         if (token[0] == '\"' || token[0] == '\'') {
             memmove(argv[i], token + 1, strlen(token));
         }
-        if (token[strlen(token) - 2] == '\"' || token[strlen(token) - 2] == '\'') {
-            argv[i][strlen(token) - 2] = '\0'; 
+        if (token[strlen(token) - 1] == '\"' || token[strlen(token) - 1] == '\'') {
+            argv[i][strlen(token) - 1] = '\0'; 
         }
         printf("%s\n", argv[i]);
         free(token); 
