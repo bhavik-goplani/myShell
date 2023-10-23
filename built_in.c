@@ -34,7 +34,7 @@ int sh_cd(char **argv)
     }
     else {
         for (int i = 1; argv[i] != NULL; i++) {
-            char *token = strdup(argv[i]);
+            char *token = argv[i];
             if (token[0] == '$') {
                 token++;
                 char *result = helper_env_path(token);
@@ -234,8 +234,6 @@ char **helper_remove_quotes(char **argv) {
 
         // Null-terminate the modified string
         token[write_index] = '\0';
-
-        printf("%s\n", token);
     }
 
     return argv;
