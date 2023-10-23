@@ -8,6 +8,17 @@ void execcmd(char **argv){
         command = argv[0];
         command_location = get_location(command);
 
+        for (int i = 1; argv[i] != NULL; i++) {
+            char *token = argv[i];
+            if (token[0] == '$') {
+                token++;
+                char *result = helper_env_path(token);
+                if (result != NULL) {
+                        memmove(argv[i], result, strlen(result) + 1);
+                        free(result);
+                }
+            }
+        }
         if (execve(command_location, argv, NULL) == -1) {
             free(command_location);
             char error_message[100];
