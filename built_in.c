@@ -5,7 +5,8 @@ char *builtin_str[] = {
     "exit",
     "quit",
     "export",
-    "echo"
+    "echo",
+    "pwd"
 };
 
 int (*builtin_func[]) (char **) = {
@@ -13,7 +14,8 @@ int (*builtin_func[]) (char **) = {
     &sh_exit,
     &sh_exit,
     &sh_export,
-    &sh_echo
+    &sh_echo,
+    &sh_pwd
 };
 
 int sh_num_builtins() {
@@ -50,7 +52,9 @@ int sh_cd(char **argv)
                 perror("ErrorChangingDirectory:");
             }
             else {
-                setenv("PWD", argv[i], 1);
+                char *cwd = getcwd(NULL, 0);
+                setenv("PWD", cwd, 1);
+                free(cwd);
             }
         }
     }
@@ -109,6 +113,14 @@ int sh_echo(char **argv)
         }
         printf("\n");
     }
+    return (0);
+}
+
+int sh_pwd()
+{
+    char *cwd = getcwd(NULL, 0);
+    printf("%s\n", cwd);
+    free(cwd); 
     return (0);
 }
 
