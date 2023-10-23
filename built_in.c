@@ -97,7 +97,7 @@ int sh_echo(char **argv)
         printf("\n");
     }
     else {
-        argv = helper_remove_quotes(argv);
+        // argv = helper_remove_quotes(argv);
         for (int i = 1; argv[i] != NULL; i++) {
             char *token = strdup(argv[i]);
             if (token[0] == '$') {
