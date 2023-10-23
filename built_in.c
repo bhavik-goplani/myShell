@@ -187,13 +187,10 @@ char **helper_remove_quotes(char **argv) {
         char *token = strdup(argv[i]);
         
         if (token[0] == '\"' || token[0] == '\'' ) {
-            token = token + 1;
-            memmove(argv[i], token, strlen(token));
+            memmove(argv[i], token + 1, strlen(token));
         }
         if (token[strlen(token) - 1] == '\"' || token[strlen(token) - 1] == '\'') {
-            // argv[i][strlen(token) - 1] = '\0'; 
-            token[strlen(token) - 1] = '\0';
-            memmove(argv[i], token, strlen(token));
+            argv[i][strlen(token) - 1] = '\0'; 
         }
         printf("%s\n", argv[i]);
         free(token); 
