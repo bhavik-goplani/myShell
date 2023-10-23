@@ -31,8 +31,10 @@ int main(int argc, char **argv) {
 
 void free_argv(char **argv) {
     for (int i = 0; argv[i] != NULL; i++) {
-        free(argv[i]);
-        argv[i] = NULL;
+        if (argv[i] != NULL){
+            free(argv[i]);
+            argv[i] = NULL;
+        }
     }
     free(argv);
     argv = NULL;
