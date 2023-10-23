@@ -193,6 +193,7 @@ char **helper_remove_quotes(char **argv) {
             token[strlen(token)-1] = '\0';
             argv[i] = token;
         }
+        free(token);
     }
     return argv;
 }
