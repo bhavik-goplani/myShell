@@ -99,7 +99,7 @@ int sh_echo(char **argv)
     else {
         // argv = helper_remove_quotes(argv);
         for (int i = 1; argv[i] != NULL; i++) {
-            char *token = strdup(argv[i]);
+            char *token = argv[i];
             if (token[0] == '$') {
                 token++;
                 char *value = helper_env_path(token);
@@ -107,11 +107,9 @@ int sh_echo(char **argv)
                 if (value != NULL){
                     free(value);
                 }
-                free(token); 
             }
             else {
                 printf("%s ", argv[i]);
-                free(token);
             }
         }
         printf("\n");
@@ -152,7 +150,7 @@ char *helper_env_path(char *token) {
             free(token_copy);
             return NULL;
         }
-        strcpy(result, value); 
+        strcpy(result, value);
         strcat(result, path);
         strcat(result, "\0");
         free(token_copy);  
