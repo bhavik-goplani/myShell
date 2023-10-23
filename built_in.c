@@ -196,6 +196,7 @@ char **helper_remove_quotes(char **argv) {
             free(argv[i]);
             argv[i] = token;
         }
+        printf("%s\n", argv[i]);
     }
     return argv;
 }
