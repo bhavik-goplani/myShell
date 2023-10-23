@@ -32,16 +32,19 @@ int sh_cd(char **argv)
     }
     else {
         for (int i = 1; argv[i] != NULL; i++) {
-            if (argv[i][0] == '$') {
-                argv[i]++;
-                char *result = helper_env_path(argv[i]);
+            char *token = strdup(argv[i]);
+            if (token[0] == '$') {
+                token++;
+                char *result = helper_env_path(token);
                 if (chdir(result) == -1) {
                     perror("ErrorChangingDirectory:");
                 }
                 else {
                     setenv("PWD", result, 1);
                 }
-                free(result);
+                if (result != NULL) {
+                    free(result);
+                }
             }
             else if (chdir(argv[i]) == -1) {
                 perror("ErrorChangingDirectory:");
