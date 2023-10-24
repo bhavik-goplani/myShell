@@ -14,7 +14,9 @@ void execcmd(char **argv){
                 token++;
                 char *result = helper_env_path(token);
                 if (result != NULL) {
-                    argv[i] = result;
+                    free (argv[i]);
+                    argv[i] = malloc(strlen(result) + 1);
+                    strcpy(argv[i], result);
                     free(result);
                 }
             }
