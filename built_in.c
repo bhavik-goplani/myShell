@@ -184,9 +184,9 @@ char *helper_env_path(char *token) {
 
 
 char **helper_remove_quotes(char **argv) {
+    char start_quote = '\0';
     for (int i = 0; argv[i] != NULL; i++) {
         char *token = argv[i];
-        char start_quote = '\0';
         int token_length = strlen(token);
         int read_index = 0;
         int write_index = 0;
