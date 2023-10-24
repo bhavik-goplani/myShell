@@ -42,10 +42,18 @@ void free_argv(char **argv) {
 
 int sh_execute(char **argv) {
     int i;
+    int redirection_type;
 
     if (argv[0] == NULL) {
         return (1);
     }
+
+    redirection_type = redirection_check(argv);
+    if (redirection_type != -1) {
+        redirection(argv, redirection_type);
+        return 1; // Return after handling redirection
+    }
+
     for (i = 0; i < sh_num_builtins(); i++) {
         if (strcmp(argv[0], builtin_str[i]) == 0) {
             return ((*builtin_func[i])(argv));

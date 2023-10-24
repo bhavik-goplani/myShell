@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <ctype.h>
 
 
 void execcmd(char **argv);
@@ -24,3 +26,9 @@ char *helper_env_path(char *token);
 char **helper_remove_quotes(char **argv);
 extern char *builtin_str[];
 extern int (*builtin_func[]) (char **);
+
+int redirection_check(char **argv);
+int redirection(char **argv, int state);
+int redirection_count(char **argv);
+int* redirection_operators(char **argv);
+int multiple_redirection(char **argv, int* state_counts);
