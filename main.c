@@ -48,10 +48,9 @@ int sh_execute(char **argv) {
         return (1);
     }
 
-     redirection_type = redirection_check(argv);
+    redirection_type = redirection_check(argv);
     if (redirection_type != -1) {
-        redirection(argv);
-        return 1; // Return after handling redirection
+       return execute_redirection(argv);
     }
 
     for (i = 0; i < sh_num_builtins(); i++) {
@@ -78,4 +77,22 @@ int sh_launch(char **argv) {
     }
 
     return (1);
+}
+
+int execute_redirection(char **argv) {
+    pid_t pid;
+    int status;
+
+    pid = fork();
+    if (pid == 0) { // Child process
+        redirection(argv);
+        exit(EXIT_FAILURE); // If redirection fails, exit child
+    } else if (pid < 0) { // Forking error
+        perror("ErrorForking:");
+        return -1;
+    } else { // Parent process
+        wait(&status); // Wait for child to finish
+    }
+
+    return 1;
 }

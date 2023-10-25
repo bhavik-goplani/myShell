@@ -30,3 +30,4 @@ extern int (*builtin_func[]) (char **);
 int redirection_check(char **argv);
 int redirection(char **argv);
 int handle_redirection(char **argv, int state, int *index);
+int execute_redirection(char **argv);
