@@ -28,7 +28,5 @@ extern char *builtin_str[];
 extern int (*builtin_func[]) (char **);
 
 int redirection_check(char **argv);
-int redirection(char **argv, int state);
-int redirection_count(char **argv);
-int* redirection_operators(char **argv);
-int multiple_redirection(char **argv, int* state_counts);
+int redirection(char **argv);
+int handle_redirection(char **argv, int state, int *index);

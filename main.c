@@ -48,9 +48,9 @@ int sh_execute(char **argv) {
         return (1);
     }
 
-    redirection_type = redirection_check(argv);
+     redirection_type = redirection_check(argv);
     if (redirection_type != -1) {
-        redirection(argv, redirection_type);
+        redirection(argv);
         return 1; // Return after handling redirection
     }
 
