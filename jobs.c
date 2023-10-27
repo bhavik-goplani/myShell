@@ -40,6 +40,7 @@ void check_jobs() {
     for (int i = 0; i < job_count; i++) {
         if (waitpid(jobs[i].pid, NULL, WNOHANG) > 0) {
             printf("Completed: [%d] %d %s\n", jobs[i].job_id, jobs[i].pid, jobs[i].command);
+            jobs[i].completed = 1;
             remove_job(jobs[i].pid);
             i--; // Adjust index after removing a job
         }

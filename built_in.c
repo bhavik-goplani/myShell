@@ -7,7 +7,8 @@ char *builtin_str[] = {
     "export",
     "echo",
     "pwd",
-    "|"
+    "|",
+    "jobs"
 };
 
 int (*builtin_func[]) (char **) = {
@@ -17,7 +18,8 @@ int (*builtin_func[]) (char **) = {
     &sh_export,
     &sh_echo,
     &sh_pwd,
-    &sh_pipe
+    &sh_pipe,
+    &sh_jobs
 };
 
 int sh_num_builtins() {
@@ -199,4 +201,10 @@ int sh_pipe(char **argv) {
     }
 
     return 0;
+}
+
+int sh_jobs(char **argv) {
+    (void) argv;
+    print_jobs();
+    return 1;
 }
