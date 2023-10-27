@@ -46,3 +46,5 @@ void remove_job(pid_t pid);
 void print_jobs();
 void check_jobs();
 extern int job_count;
+void handle_kill_command(int signum, pid_t pid);
+pid_t get_pid_from_jobid(int job_id);

@@ -58,3 +58,18 @@ void print_jobs() {
         }
     }
 }
+
+void handle_kill_command(int signum, pid_t pid) {
+    if (kill(pid, signum) == -1) {
+        perror("kill");
+    }
+}
+
+pid_t get_pid_from_jobid(int job_id) {
+    for (int i = 0; i < job_count; i++) {
+        if (jobs[i].job_id == job_id) {
+            return jobs[i].pid;
+        }
+    }
+    return -1; // Return -1 if jobid not found
+}
