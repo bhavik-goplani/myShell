@@ -167,6 +167,15 @@ int sh_pipe(char **argv) {
                 if (j != i) close(pipes[j][1]);
             }
 
+            // Handle redirections before executing the command
+            int redirection_type = redirection_check(argv);
+            if (redirection_type != -1) {
+                if (redirection(argv) == -1) {
+                    perror("redirection error");
+                    exit(EXIT_FAILURE);
+                }
+            }
+
             // Execute the command
             char *cmd[100]; // adjust size as necessary
             int cmd_index = 0;

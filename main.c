@@ -1,6 +1,7 @@
 #include "main.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     char *prompt = "[QUASH]$ ";
     char *lineptr;
     size_t n = 0;
@@ -9,33 +10,39 @@ int main(int argc, char **argv) {
     (void)argc;
     printf("Welcome...\n");
 
-    while (1) {
+    while (1)
+    {
+
+        check_jobs();
         lineptr = NULL;
         printf("%s", prompt);
-        read = getline(&lineptr, &n, stdin); 
-        
-        if (read == -1) {
-            free(lineptr);    
+        read = getline(&lineptr, &n, stdin);
+
+        if (read == -1)
+        {
+            free(lineptr);
             return (0);
         }
 
         remove_comments(lineptr);
-        
+
         argv = parse_command(lineptr, argv);
-        if (sh_execute(argv) == -1) {
+        if (sh_execute(argv) == -1)
+        {
             free_argv(argv);
             return (0);
         }
         free_argv(argv);
-        check_jobs();
-
     }
     return (0);
 }
 
-void free_argv(char **argv) {
-    for (int i = 0; argv[i] != NULL; i++) {
-        if (argv[i] != NULL){
+void free_argv(char **argv)
+{
+    for (int i = 0; argv[i] != NULL; i++)
+    {
+        if (argv[i] != NULL)
+        {
             free(argv[i]);
             argv[i] = NULL;
         }
@@ -44,48 +51,23 @@ void free_argv(char **argv) {
     argv = NULL;
 }
 
-int sh_execute(char **argv) {
+int sh_execute(char **argv)
+{
     int i;
     int redirection_type;
 
-    if (argv[0] == NULL) {
+    if (argv[0] == NULL)
+    {
         return (1);
     }
 
-    if (strcmp(argv[0], "kill") == 0) {
-        if (argv[1] && argv[2]) {
-            int signum = atoi(argv[1]);
-            pid_t pid; // Declare pid here
-
-            if (argv[2][0] == '%') { // Check if it's in the format %jobid
-                int jobid = atoi(&argv[2][1]); // Skip the '%' character
-                pid = get_pid_from_jobid(jobid);
-                if (pid == -1) {
-                    printf("No such job: %s\n", argv[2]); // Use printf instead of perror
-                    return -1;
-                }
-            } else {
-                pid = atoi(argv[2]);
-            }
-            handle_kill_command(signum, pid);
-        } else {
-            printf("Usage: kill SIGNUM PID|%%jobid\n");
-        }
-    }
-
-    bool background = false;
-    for (int i = 0; argv[i] != NULL; i++) {
-        if (strcmp(argv[i], "&") == 0) {
-            background = true;
-            argv[i] = NULL; // Remove '&' from argv
-            break;
-        }
-    }
-
     // Check for pipes before checking for built-ins
-    for (int i = 0; argv[i] != NULL; i++) {
-        if (strcmp(argv[i], "|") == 0) {
-            if (argv[1] == NULL || strcmp(argv[1], "|") == 0) {
+    for (int i = 0; argv[i] != NULL; i++)
+    {
+        if (strcmp(argv[i], "|") == 0)
+        {
+            if (argv[1] == NULL || strcmp(argv[1], "|") == 0)
+            {
                 fprintf(stderr, "Syntax error: Invalid use of pipe\n");
                 return -1;
             }
@@ -93,36 +75,86 @@ int sh_execute(char **argv) {
         }
     }
 
-
     redirection_type = redirection_check(argv);
-    if (redirection_type != -1) {
-       return execute_redirection(argv);
+    if (redirection_type != -1)
+    {
+        return execute_redirection(argv);
     }
 
-    for (i = 0; i < sh_num_builtins(); i++) {
-        if (strcmp(argv[0], builtin_str[i]) == 0) {
+    if (strcmp(argv[0], "kill") == 0)
+    {
+        if (argv[1] && argv[2])
+        {
+            int signum = atoi(argv[1]);
+            pid_t pid; // Declare pid here
+
+            if (argv[2][0] == '%')
+            {                                  // Check if it's in the format %jobid
+                int jobid = atoi(&argv[2][1]); // Skip the '%' character
+                pid = get_pid_from_jobid(jobid);
+                if (pid == -1)
+                {
+                    printf("No such job: %s\n", argv[2]); // Use printf instead of perror
+                    return -1;
+                }
+            }
+            else
+            {
+                pid = atoi(argv[2]);
+            }
+            handle_kill_command(signum, pid);
+        }
+        else
+        {
+            printf("Usage: kill SIGNUM PID|%%jobid\n");
+        }
+    }
+
+    bool background = false;
+    for (int i = 0; argv[i] != NULL; i++)
+    {
+        if (strcmp(argv[i], "&") == 0)
+        {
+            background = true;
+            argv[i] = NULL; // Remove '&' from argv
+            break;
+        }
+    }
+
+    for (i = 0; i < sh_num_builtins(); i++)
+    {
+        if (strcmp(argv[0], builtin_str[i]) == 0)
+        {
             return ((*builtin_func[i])(argv));
         }
     }
     return (sh_launch(argv, background));
 }
 
-int sh_launch(char **argv, bool background) {
+int sh_launch(char **argv, bool background)
+{
     pid_t pid;
 
     pid = fork();
-    if (pid == 0) {
+
+    if (pid == 0)
+    {
         execcmd(argv);
-        exit(0);
+        exit(EXIT_FAILURE);
     }
-    else if (pid < 0) {
+    else if (pid < 0)
+    {
         perror("ErrorForking:");
     }
-    else {
-        if (background) {
+    else
+    {
+        if (background)
+        {
             printf("Background job started: [%d] %d %s &\n", job_count + 1, pid, argv[0]);
             add_job(pid, argv[0]);
-        } else {
+        }
+        else
+        {
             wait(NULL);
         }
     }
@@ -130,18 +162,24 @@ int sh_launch(char **argv, bool background) {
     return (1);
 }
 
-int execute_redirection(char **argv) {
+int execute_redirection(char **argv)
+{
     pid_t pid;
     int status;
 
     pid = fork();
-    if (pid == 0) { // Child process
+    if (pid == 0)
+    { // Child process
         redirection(argv);
         exit(EXIT_FAILURE); // If redirection fails, exit child
-    } else if (pid < 0) { // Forking error
+    }
+    else if (pid < 0)
+    { // Forking error
         perror("ErrorForking:");
         return -1;
-    } else { // Parent process
+    }
+    else
+    {                  // Parent process
         wait(&status); // Wait for child to finish
     }
 
