@@ -18,6 +18,8 @@ int main(int argc, char **argv) {
             free(lineptr);    
             return (0);
         }
+
+        remove_comments(lineptr);
         
         argv = parse_command(lineptr, argv);
         if (sh_execute(argv) == -1) {
@@ -46,6 +48,17 @@ int sh_execute(char **argv) {
 
     if (argv[0] == NULL) {
         return (1);
+    }
+
+    // Check for pipes before checking for built-ins
+    for (int i = 0; argv[i] != NULL; i++) {
+        if (strcmp(argv[i], "|") == 0) {
+            if (argv[1] == NULL || strcmp(argv[1], "|") == 0) {
+                fprintf(stderr, "Syntax error: Invalid use of pipe\n");
+                return 1;
+            }
+            return sh_pipe(argv);
+        }
     }
 
     redirection_type = redirection_check(argv);

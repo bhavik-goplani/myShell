@@ -6,7 +6,8 @@ char *builtin_str[] = {
     "quit",
     "export",
     "echo",
-    "pwd"
+    "pwd",
+    "|"
 };
 
 int (*builtin_func[]) (char **) = {
@@ -15,7 +16,8 @@ int (*builtin_func[]) (char **) = {
     &sh_exit,
     &sh_export,
     &sh_echo,
-    &sh_pwd
+    &sh_pwd,
+    &sh_pipe
 };
 
 int sh_num_builtins() {
@@ -125,101 +127,69 @@ int sh_pwd()
     return (0);
 }
 
-char *helper_env_path(char *token) {
-    char *path = NULL;
-    char *value = NULL;
-    
-    char *token_copy = strdup(token);
-    if (token_copy == NULL) {
-        return NULL;
-    }
-
-    for (int i = 0; i < (int)strlen(token); i++) {
-        if (token[i] == '/') {
-            path = token + i;
-            break;
-        }
-    }
-    
-    char *environ = strtok(token_copy, "/");
-    value = getenv(environ);
-    
-    if (value != NULL && path != NULL) {
-        char *result = (char *)malloc(strlen(value) + strlen(path) + 1);
-        if (result == NULL) {
-            free(token_copy);
-            return NULL;
-        }
-        strcpy(result, value);
-        strcat(result, path);
-        strcat(result, "\0");
-        free(token_copy);  
-        return result;
-    } else if (value != NULL) {
-        char *result = (char *)malloc(strlen(value) + 1);
-        if (result == NULL) {
-            free(token_copy);
-            return NULL;
-        }
-        strcpy(result, value);
-        strcat(result, "\0");
-        free(token_copy);  
-        return result;
-    } else if (path != NULL) {
-        char *result = (char *)malloc(strlen(path) + 1);
-        if (result == NULL) {
-
-            free(token_copy);
-            return NULL;
-        }
-        strcpy(result, path);
-        strcat(result, "\0");
-        free(token_copy);  
-        return result;
-    } else {
-        free(token_copy); 
-        return NULL;
-    }
-}
 
 
-char **helper_remove_quotes(char **argv) {
-    char start_quote = '\0';
+int sh_pipe(char **argv) { // pipes functionality
+    int num_commands = 1;
     for (int i = 0; argv[i] != NULL; i++) {
-        char *token = argv[i];
-        int token_length = strlen(token);
-        int read_index = 0;
-        int write_index = 0;
-
-        // Iterate through the string character by character
-        while (read_index < token_length) {
-            char current_char = token[read_index];
-
-            if (current_char == '\'' || current_char == '\"') {
-                // If we encounter a quote character
-                if (start_quote == '\0') {
-                    // If start_quote is not set, set it
-                    start_quote = current_char;
-                } else if (start_quote == current_char) {
-                    // If start_quote is the same as the current character, it's a closing quote
-                    start_quote = '\0';
-                } else {
-                    // If start_quote is different from the current character, keep it
-                    token[write_index] = current_char;
-                    write_index++;
-                }
-            } else {
-                // For non-quote characters, simply copy them
-                token[write_index] = current_char;
-                write_index++;
-            }
-
-            read_index++;
+        if (strcmp(argv[i], "|") == 0) {
+            num_commands++;
         }
-
-        // Null-terminate the modified string
-        token[write_index] = '\0';
     }
 
-    return argv;
+    int pipes[num_commands - 1][2];
+    for (int i = 0; i < num_commands - 1; i++) {
+        if (pipe(pipes[i]) == -1) {
+            perror("pipe");
+            return 1;
+        }
+    }
+
+    int command_index = 0;
+    int argv_index = 0;
+    pid_t pid;
+    while (command_index < num_commands) {
+        char *command_argv[100];  // adjust size as necessary
+        int command_argc = 0;
+        while (argv[argv_index] != NULL && strcmp(argv[argv_index], "|") != 0) {
+            command_argv[command_argc++] = argv[argv_index++];
+        }
+        command_argv[command_argc] = NULL;
+        argv_index++;  // skip the pipe symbol for the next command
+
+        pid = fork();
+        if (pid == -1) {
+            perror("fork");
+            return 1;
+        } else if (pid == 0) {
+            // Child process
+            if (command_index > 0) {
+                dup2(pipes[command_index - 1][0], STDIN_FILENO);
+                close(pipes[command_index - 1][1]);
+            }
+            if (command_index < num_commands - 1) {
+                dup2(pipes[command_index][1], STDOUT_FILENO);
+                close(pipes[command_index][0]);
+            }
+            for (int i = 0; i < num_commands - 1; i++) {
+                close(pipes[i][0]);
+                close(pipes[i][1]);
+            }
+            execvp(command_argv[0], command_argv);
+            perror("execvp");
+            exit(EXIT_FAILURE);
+        }
+        command_index++;
+    }
+
+    for (int i = 0; i < num_commands - 1; i++) {
+        close(pipes[i][0]);
+        close(pipes[i][1]);
+    }
+
+    for (int i = 0; i < num_commands; i++) {
+        wait(NULL);
+    }
+
+    return 0;
 }
