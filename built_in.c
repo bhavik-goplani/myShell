@@ -128,66 +128,73 @@ int sh_pwd()
 }
 
 
-
-int sh_pipe(char **argv) { // pipes functionality
-    int num_commands = 1;
+int sh_pipe(char **argv) {
+    int num_pipes = 0;
     for (int i = 0; argv[i] != NULL; i++) {
         if (strcmp(argv[i], "|") == 0) {
-            num_commands++;
+            num_pipes++;
         }
     }
 
-    int pipes[num_commands - 1][2];
-    for (int i = 0; i < num_commands - 1; i++) {
+    int pipes[num_pipes][2];
+    for (int i = 0; i < num_pipes; i++) {
         if (pipe(pipes[i]) == -1) {
             perror("pipe");
             return 1;
         }
     }
 
-    int command_index = 0;
-    int argv_index = 0;
-    pid_t pid;
-    while (command_index < num_commands) {
-        char *command_argv[100];  // adjust size as necessary
-        int command_argc = 0;
-        while (argv[argv_index] != NULL && strcmp(argv[argv_index], "|") != 0) {
-            command_argv[command_argc++] = argv[argv_index++];
-        }
-        command_argv[command_argc] = NULL;
-        argv_index++;  // skip the pipe symbol for the next command
-
-        pid = fork();
-        if (pid == -1) {
-            perror("fork");
-            return 1;
-        } else if (pid == 0) {
-            // Child process
-            if (command_index > 0) {
-                dup2(pipes[command_index - 1][0], STDIN_FILENO);
-                close(pipes[command_index - 1][1]);
+    int command_start = 0;
+    for (int i = 0; i <= num_pipes; i++) {
+        pid_t pid = fork();
+        if (pid == 0) {
+            // If not first command, redirect stdin from previous pipe
+            if (i != 0) {
+                dup2(pipes[i - 1][0], STDIN_FILENO);
+                close(pipes[i - 1][1]);
             }
-            if (command_index < num_commands - 1) {
-                dup2(pipes[command_index][1], STDOUT_FILENO);
-                close(pipes[command_index][0]);
-            }
-            for (int i = 0; i < num_commands - 1; i++) {
+            // If not last command, redirect stdout to next pipe
+            if (i != num_pipes) {
+                dup2(pipes[i][1], STDOUT_FILENO);
                 close(pipes[i][0]);
-                close(pipes[i][1]);
             }
-            execvp(command_argv[0], command_argv);
+
+            // Close all other pipes
+            for (int j = 0; j < num_pipes; j++) {
+                if (j != i - 1) close(pipes[j][0]);
+                if (j != i) close(pipes[j][1]);
+            }
+
+            // Execute the command
+            char *cmd[100]; // adjust size as necessary
+            int cmd_index = 0;
+            for (int j = command_start; argv[j] && strcmp(argv[j], "|") != 0; j++) {
+                cmd[cmd_index++] = argv[j];
+            }
+            cmd[cmd_index] = NULL;
+            execvp(cmd[0], cmd);
             perror("execvp");
             exit(EXIT_FAILURE);
+        } else if (pid < 0) {
+            perror("fork");
+            return 1;
         }
-        command_index++;
+
+        // Move to the next command
+        while (argv[command_start] && strcmp(argv[command_start], "|") != 0) {
+            command_start++;
+        }
+        command_start++; // skip the pipe symbol
     }
 
-    for (int i = 0; i < num_commands - 1; i++) {
+    // Close all pipes in the parent
+    for (int i = 0; i < num_pipes; i++) {
         close(pipes[i][0]);
         close(pipes[i][1]);
     }
 
-    for (int i = 0; i < num_commands; i++) {
+    // Wait for all child processes to finish
+    for (int i = 0; i <= num_pipes; i++) {
         wait(NULL);
     }
 

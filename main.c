@@ -27,6 +27,8 @@ int main(int argc, char **argv) {
             return (0);
         }
         free_argv(argv);
+        check_jobs();
+
     }
     return (0);
 }
@@ -50,16 +52,26 @@ int sh_execute(char **argv) {
         return (1);
     }
 
+    bool background = false;
+    for (int i = 0; argv[i] != NULL; i++) {
+        if (strcmp(argv[i], "&") == 0) {
+            background = true;
+            argv[i] = NULL; // Remove '&' from argv
+            break;
+        }
+    }
+
     // Check for pipes before checking for built-ins
     for (int i = 0; argv[i] != NULL; i++) {
         if (strcmp(argv[i], "|") == 0) {
             if (argv[1] == NULL || strcmp(argv[1], "|") == 0) {
                 fprintf(stderr, "Syntax error: Invalid use of pipe\n");
-                return 1;
+                return -1;
             }
             return sh_pipe(argv);
         }
     }
+
 
     redirection_type = redirection_check(argv);
     if (redirection_type != -1) {
@@ -71,10 +83,10 @@ int sh_execute(char **argv) {
             return ((*builtin_func[i])(argv));
         }
     }
-    return (sh_launch(argv));
+    return (sh_launch(argv, background));
 }
 
-int sh_launch(char **argv) {
+int sh_launch(char **argv, bool background) {
     pid_t pid;
 
     pid = fork();
@@ -86,7 +98,12 @@ int sh_launch(char **argv) {
         perror("ErrorForking:");
     }
     else {
-        wait(NULL);
+        if (background) {
+            printf("Background job started: [%d] %d %s &\n", job_count + 1, pid, argv[0]);
+            add_job(pid, argv[0]);
+        } else {
+            wait(NULL);
+        }
     }
 
     return (1);

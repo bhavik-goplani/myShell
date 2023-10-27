@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 
 void execcmd(char **argv);
@@ -25,7 +26,7 @@ int sh_export(char **argv);
 int sh_echo(char **argv);
 int sh_pwd();
 int sh_num_builtins();
-int sh_launch(char **argv);
+int sh_launch(char **argv, bool background);
 int sh_execute(char **argv);
 extern char *builtin_str[];
 extern int (*builtin_func[]) (char **);
@@ -37,5 +38,11 @@ int execute_redirection(char **argv);
 
 int sh_pipe(char **argv);
 
+
+char* join_strings(char **argv, const char *delimiter);
+
 void add_job(pid_t pid, const char *command);
+void remove_job(pid_t pid);
 void print_jobs();
+void check_jobs();
+extern int job_count;

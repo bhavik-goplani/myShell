@@ -106,3 +106,23 @@ char **helper_remove_quotes(char **argv) {
 
     return argv;
 }
+
+char* join_strings(char **argv, const char *delimiter) {
+    int length = 0;
+    int i;
+    for (i = 0; argv[i] != NULL; i++) {
+        length += strlen(argv[i]) + strlen(delimiter);
+    }
+
+    char *result = malloc(length + 1);
+    result[0] = '\0';
+
+    for (i = 0; argv[i] != NULL; i++) {
+        strcat(result, argv[i]);
+        if (argv[i + 1] != NULL) {
+            strcat(result, delimiter);
+        }
+    }
+
+    return result;
+}
