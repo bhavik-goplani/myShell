@@ -20,10 +20,17 @@ int main(int argc, char **argv) {
         }
         
         argv = parse_command(lineptr, argv);
-        if (sh_execute(argv) == -1) {
-            free_argv(argv);
-            return (0);
+        int background = is_background_job(argv);
+
+        if (background) {
+            
+            if (sh_execute(argv) == -1) {
+                free_argv(argv);
+                return (0);
+            }
         }
+
+        
         free_argv(argv);
     }
     return (0);
@@ -70,4 +77,20 @@ int sh_launch(char **argv) {
     }
 
     return (1);
+}
+
+int is_background_job(char **argv) {
+    int i;
+
+    // Find the last non-null element in the argv array
+    for (i = 0; argv[i] != NULL; i++) {
+        // No need to do anything in the loop; just find the last non-null element
+    }
+
+    if (i > 0 && strcmp(argv[i - 1], "&") == 0) {
+        // If the last element is "&", it's a background job
+        return 1;
+    } else {
+        return 0;
+    }
 }
