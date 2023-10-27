@@ -36,3 +36,6 @@ int handle_redirection(char **argv, int state, int *index);
 int execute_redirection(char **argv);
 
 int sh_pipe(char **argv);
+
+void add_job(pid_t pid, const char *command);
+void print_jobs();
