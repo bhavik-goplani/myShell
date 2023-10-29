@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <signal.h>
+#include <errno.h>
 
 
 void execcmd(char **argv);

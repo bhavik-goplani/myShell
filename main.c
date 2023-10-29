@@ -83,30 +83,17 @@ int sh_execute(char **argv)
 
     if (strcmp(argv[0], "kill") == 0)
     {
-        if (argv[1] && argv[2])
+        if (argv[1] != NULL && argv[2] != NULL)
         {
             int signum = atoi(argv[1]);
-            pid_t pid; // Declare pid here
-
-            if (argv[2][0] == '%')
-            {                                  // Check if it's in the format %jobid
-                int jobid = atoi(&argv[2][1]); // Skip the '%' character
-                pid = get_pid_from_jobid(jobid);
-                if (pid == -1)
-                {
-                    printf("No such job: %s\n", argv[2]); // Use printf instead of perror
-                    return -1;
-                }
-            }
-            else
-            {
-                pid = atoi(argv[2]);
-            }
+            int pid = atoi(argv[2]);
             handle_kill_command(signum, pid);
+            return 1;
         }
         else
         {
-            printf("Usage: kill SIGNUM PID|%%jobid\n");
+            fprintf(stderr, "Usage: kill SIGNUM PID\n");
+            return -1;
         }
     }
 
@@ -139,6 +126,7 @@ int sh_launch(char **argv, bool background)
 
     if (pid == 0)
     {
+        setpgid(0, 0);
         execcmd(argv);
         exit(EXIT_FAILURE);
     }
@@ -155,7 +143,8 @@ int sh_launch(char **argv, bool background)
         }
         else
         {
-            wait(NULL);
+            int status;
+            waitpid(pid, &status, 0);
         }
     }
 

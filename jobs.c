@@ -51,8 +51,6 @@ void print_jobs() {
     for (int i = 0; i < job_count; i++) {
         if (jobs[i].completed == 0) {
             printf("[%d] %d %s &\n", jobs[i].job_id, jobs[i].pid, jobs[i].command);
-        } else {
-            printf("[%d] %d %s & (completed)\n", jobs[i].job_id, jobs[i].pid, jobs[i].command);
         }
     }
 }
@@ -62,9 +60,8 @@ void handle_kill_command(int signum, pid_t pid) {
         perror("kill");
     } else {
         // If the signal is SIGTERM or SIGINT, remove the job
-        if (signum == SIGTERM || signum == SIGINT) {
-            remove_job(pid);
-        }
+        printf("Signal %d sent to PID %d\n", signum, pid);
+        remove_job(pid);
     }
 }
 
