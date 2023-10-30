@@ -103,6 +103,7 @@ int sh_execute(char **argv)
         if (strcmp(argv[i], "&") == 0)
         {
             background = true;
+            free(argv[i]);
             argv[i] = NULL; // Remove '&' from argv
             break;
         }
