@@ -53,7 +53,6 @@ void free_argv(char **argv)
 
 int sh_execute(char **argv)
 {
-    int i;
     int redirection_type;
 
     if (argv[0] == NULL)
