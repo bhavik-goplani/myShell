@@ -18,6 +18,7 @@ int job_count = 0;
 void add_job(pid_t pid, const char *command) {
     jobs[job_count].pid = pid;
     jobs[job_count].job_id = job_count + 1;
+    jobs[job_count].completed = 0; // Set completed to 0 (false) by default
     strncpy(jobs[job_count].command, command, 255);
     job_count++;
 }
