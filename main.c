@@ -109,13 +109,16 @@ int sh_execute(char **argv)
         }
     }
 
-    for (i = 0; i < sh_num_builtins(); i++)
-    {
-        if (strcmp(argv[0], builtin_str[i]) == 0)
+    if (!background) {
+        for (int i = 0; i < sh_num_builtins(); i++)
         {
-            return ((*builtin_func[i])(argv));
+            if (strcmp(argv[0], builtin_str[i]) == 0)
+            {
+                return ((*builtin_func[i])(argv));
+            }
         }
     }
+
     return (sh_launch(argv, background));
 }
 
@@ -128,7 +131,18 @@ int sh_launch(char **argv, bool background)
     if (pid == 0)
     {
         setpgid(0, 0);
-        execcmd(argv);
+        bool built_in = false;
+        for (int i = 0; i < sh_num_builtins(); i++)
+        {
+            if (strcmp(argv[0], builtin_str[i]) == 0)
+            {
+                (*builtin_func[i])(argv);
+                built_in = true;
+            }
+        }
+        if (!built_in) {
+            execcmd(argv);
+        }
         exit(EXIT_FAILURE);
     }
     else if (pid < 0)
