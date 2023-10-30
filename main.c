@@ -137,6 +137,7 @@ int sh_launch(char **argv, bool background)
             {
                 (*builtin_func[i])(argv);
                 built_in = true;
+                free_argv(argv);
             }
         }
         if (!built_in) {
