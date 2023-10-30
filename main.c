@@ -66,7 +66,7 @@ int sh_execute(char **argv)
     {
         if (strcmp(argv[i], "|") == 0)
         {
-            if (argv[1] == NULL || strcmp(argv[1], "|") == 0)
+            if (argv[1] == NULL || strcmp(argv[i+1], "|") == 0)
             {
                 fprintf(stderr, "Syntax error: Invalid use of pipe\n");
                 return 1;
