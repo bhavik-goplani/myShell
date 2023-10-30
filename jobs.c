@@ -30,6 +30,7 @@ void remove_job(pid_t pid) {
                 jobs[j] = jobs[j + 1];
                 jobs[j].job_id--;
             }
+            print_jobs();
             job_count--;
             break;
         }
