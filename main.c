@@ -69,7 +69,7 @@ int sh_execute(char **argv)
             if (argv[1] == NULL || strcmp(argv[1], "|") == 0)
             {
                 fprintf(stderr, "Syntax error: Invalid use of pipe\n");
-                return -1;
+                return 1;
             }
             return sh_pipe(argv);
         }
@@ -93,7 +93,7 @@ int sh_execute(char **argv)
         else
         {
             fprintf(stderr, "Usage: kill SIGNUM PID\n");
-            return -1;
+            return 1;
         }
     }
 
@@ -168,7 +168,7 @@ int execute_redirection(char **argv)
     else if (pid < 0)
     { // Forking error
         perror("ErrorForking:");
-        return -1;
+        return 1;
     }
     else
     {                  // Parent process

@@ -60,7 +60,7 @@ void handle_kill_command(int signum, pid_t pid) {
         perror("kill");
     } else {
         // If the signal is SIGTERM or SIGINT, remove the job
-        printf("Signal %d sent to PID %d\n", signum, pid);
+        // printf("Signal %d sent to PID %d\n", signum, pid);
         remove_job(pid);
     }
 }
