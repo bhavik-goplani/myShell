@@ -137,9 +137,11 @@ int sh_launch(char **argv, bool background)
     else
     {
         if (background)
-        {
-            printf("Background job started: [%d] %d %s &\n", job_count + 1, pid, argv[0]);
-            add_job(pid, argv[0]);
+        {   
+            char *command = join_strings(argv, " ");
+            printf("Background job started: [%d] %d %s &\n", job_count + 1, pid, command);
+            add_job(pid, command);
+            free(command);
         }
         else
         {
