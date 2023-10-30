@@ -81,7 +81,7 @@ int redirection(char **argv) {
             i++;
         }
     }
-    execvp(argv[0], argv);
+    execcmd(argv);
     perror("execvp error");
     _exit(EXIT_FAILURE);
 }
