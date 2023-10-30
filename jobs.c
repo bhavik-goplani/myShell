@@ -28,6 +28,7 @@ void remove_job(pid_t pid) {
         if (jobs[i].pid == pid) {
             for (int j = i; j < job_count - 1; j++) {
                 jobs[j] = jobs[j + 1];
+                jobs[j].job_id--;
             }
             job_count--;
             break;
