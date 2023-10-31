@@ -183,7 +183,16 @@ int sh_pipe(char **argv) {
                 cmd[cmd_index++] = argv[j];
             }
             cmd[cmd_index] = NULL;
-            execcmd(cmd);
+            bool builtin = false;
+            for (int i = 0; i < sh_num_builtins(); i++) {
+                if (strcmp(cmd[0], builtin_str[i]) == 0) {
+                    (*builtin_func[i])(cmd);
+                    builtin = true;
+                }
+            }
+            if (!builtin) {
+                execcmd(cmd);
+            }
             perror("execvp");
             exit(EXIT_FAILURE);
         } else if (pid < 0) {
