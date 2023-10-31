@@ -27,6 +27,7 @@ int main(int argc, char **argv)
         remove_comments(lineptr);
 
         argv = parse_command(lineptr, argv);
+        argv = helper_remove_quotes(argv);
         if (sh_execute(argv) == -1)
         {
             free_argv(argv);
