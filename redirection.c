@@ -17,7 +17,15 @@ int redirection_check(char **argv) {
 
 int handle_redirection(char **argv, int state, int *index) {
     int fd;
-    char *filename = argv[*index + 1];
+    char *token = argv[*index + 1];
+    char *filename;
+    if (token[0] == '$') {
+        token++;
+        filename = helper_env_path(token);
+    }
+    else {
+        filename = token;
+    }
     if (filename == NULL) {
         fprintf(stderr, "Error: No filename provided for redirection.\n");
         return -1;
