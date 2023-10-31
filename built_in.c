@@ -183,7 +183,7 @@ int sh_pipe(char **argv) {
                 cmd[cmd_index++] = argv[j];
             }
             cmd[cmd_index] = NULL;
-            execvp(cmd[0], cmd);
+            execcmd(cmd);
             perror("execvp");
             exit(EXIT_FAILURE);
         } else if (pid < 0) {
